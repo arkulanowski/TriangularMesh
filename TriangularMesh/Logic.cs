@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace TriangularMesh
 {
-    internal class Logic
+    internal static class Logic
     {
+        internal static float[,] z_ControlPoints;
     }
 }
