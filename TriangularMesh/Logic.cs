@@ -26,12 +26,13 @@ namespace TriangularMesh
                 {
                     Vertices[i, j] = new TriangleVertex(i * x_StepSize, j * y_StepSize);
                     Vertices[i, j].CalculateZ();
+                    Vertices[i, j].CalculateNormal();
                 });
             });
 
-            Parallel.For(0, m + 1, (i) =>
+            Parallel.For(0, m, (i) =>
             {
-                Parallel.For(0, n + 1, (j) =>
+                Parallel.For(0, n, (j) =>
                 {
                     Triangles[i, j, 0] = new Triangle(Vertices[i, j], Vertices[i + 1, j], Vertices[i + 1, j + 1]);
                     Triangles[i, j, 1] = new Triangle(Vertices[i, j], Vertices[i, j + 1], Vertices[i + 1, j + 1]);
