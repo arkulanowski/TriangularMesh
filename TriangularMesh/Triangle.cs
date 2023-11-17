@@ -18,7 +18,7 @@ namespace TriangularMesh
         double[] By = new double[4];
         double[] delBx = new double[3];
         double[] delBy = new double[3];
-        Vector3D Normal;
+        public Vector3D Normal;
         public TriangleVertex(double x, double y)
         {
             this.x = x;
@@ -66,6 +66,7 @@ namespace TriangularMesh
             });
 
             Normal = Vector3D.CrossProduct(new Vector3D(1, 0, 3 * z_u), new Vector3D(0, 1, 3 * z_v));
+            Normal.Normalize();
         }
     }
     internal class Triangle
