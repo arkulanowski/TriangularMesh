@@ -42,5 +42,11 @@ namespace TriangularMesh
         TriangleVertex A;
         TriangleVertex B;
         TriangleVertex C;
+        public Triangle(TriangleVertex a, TriangleVertex b, TriangleVertex c)
+        {
+            A = a;
+            B = b;
+            C = c;
+        }
     }
 }
