@@ -11,9 +11,9 @@ namespace TriangularMesh
     {
         static int[] B = { 1, 3, 3, 1 };
         static int[] delB = { 1, 2, 1 };
-        double x;
-        double y;
-        double z;
+        public double x;
+        public double y;
+        public double z;
         double[] Bx = new double[4];
         double[] By = new double[4];
         double[] delBx = new double[3];
@@ -70,9 +70,9 @@ namespace TriangularMesh
     }
     internal class Triangle
     {
-        TriangleVertex A;
-        TriangleVertex B;
-        TriangleVertex C;
+        public TriangleVertex A;
+        public TriangleVertex B;
+        public TriangleVertex C;
         public Triangle(TriangleVertex a, TriangleVertex b, TriangleVertex c)
         {
             A = a;

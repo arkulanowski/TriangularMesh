@@ -10,13 +10,13 @@ namespace TriangularMesh
     {
         internal static float[,] z_ControlPoints;
         internal static TriangleVertex[,] Vertices;
-        internal static Triangle[,,] Triangles;
+        internal static Triangle[] Triangles;
         internal static int m;
         internal static int n;
         public static void Recalculate()
         {
             Vertices = new TriangleVertex[m + 1, n + 1];
-            Triangles = new Triangle[m, n, 2];
+            Triangles = new Triangle[2 * m * n];
             double x_StepSize = 1.0 / m;
             double y_StepSize = 1.0 / n;
 
@@ -34,8 +34,8 @@ namespace TriangularMesh
             {
                 Parallel.For(0, n, (j) =>
                 {
-                    Triangles[i, j, 0] = new Triangle(Vertices[i, j], Vertices[i + 1, j], Vertices[i + 1, j + 1]);
-                    Triangles[i, j, 1] = new Triangle(Vertices[i, j], Vertices[i, j + 1], Vertices[i + 1, j + 1]);
+                    Triangles[2*n*i + 2*j] = new Triangle(Vertices[i, j], Vertices[i + 1, j], Vertices[i + 1, j + 1]);
+                    Triangles[2*n*i + 2*j + 1] = new Triangle(Vertices[i, j], Vertices[i, j + 1], Vertices[i + 1, j + 1]);
                 });
             });
         }
