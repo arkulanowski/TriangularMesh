@@ -8,7 +8,7 @@ namespace TriangularMesh
 {
     internal static class Logic
     {
-        internal static float[,] z_ControlPoints;
+        internal static double[,] z_ControlPoints;
         internal static TriangleVertex[,] Vertices;
         internal static Triangle[] Triangles;
         internal static int m;

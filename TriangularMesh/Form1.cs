@@ -10,7 +10,7 @@ namespace TriangularMesh
         public TriangularMesh()
         {
             InitializeComponent();
-            Logic.z_ControlPoints = new float[4, 4];
+            Logic.z_ControlPoints = new double[4, 4];
             Logic.m = 5;
             Logic.n = 5;
             Logic.Recalculate();
@@ -51,30 +51,64 @@ namespace TriangularMesh
                 double l2 = ((C.y - A.y) * (x - C.x) + (A.x - C.x) * (y - C.y)) / denom;
                 return (l1, l2, 1 - l1 - l2);
             }
+            List<Point> CanvasPixelsToFill(Triangle triangle)
+            {
+                List<Point> result = new List<Point>();
+                Point[] Vertices = {new Point(x2canvx(triangle.A.x), y2canvy(triangle.A.y)),
+                    new Point(x2canvx(triangle.B.x), y2canvy(triangle.B.y)),
+                    new Point(x2canvx(triangle.C.x), y2canvy(triangle.C.y))};
+
+                int minY = Vertices.Min(p => p.Y);
+                int maxY = Vertices.Max(p => p.Y);
+                Array.Sort(Vertices, (a, b) => a.Y.CompareTo(b.Y));
+
+                for (int y = minY; y <= maxY; ++y)
+                {
+                    List<int> intersections = new List<int>();
+                    for (int i = 0; i < 3; ++i)
+                    {
+                        int next = (i + 1) % 3;
+
+                        if ((Vertices[i].Y < y && Vertices[next].Y >= y) || (Vertices[next].Y < y && Vertices[i].Y >= y))
+                        {
+                            int x = (int)(Vertices[i].X + (double)(y - Vertices[i].Y) / (Vertices[next].Y - Vertices[i].Y) * (Vertices[next].X - Vertices[i].X));
+                            intersections.Add(x);
+                        }
+                    }
+                    intersections.Sort();
+                    for (int i = 0; i < intersections.Count - 1; i += 2)
+                    {
+                        for (int x = intersections[i]; x <= intersections[i + 1]; x++)
+                        {
+                            result.Add(new Point(x, y));
+                        }
+                    }
+                }
+
+                return result;
+            }
 
             using (Graphics g = Graphics.FromImage(DrawArea))
             {
                 Color[,] Colors = new Color[Canvas.Width, Canvas.Height];
                 Vector3D V = new Vector3D(0, 0, 1);
-                Parallel.For(0, Canvas.Width, (i) =>
+                Parallel.ForEach(Logic.Triangles, (triangle) =>
                 {
-                    Parallel.For(0, Canvas.Height, (j) =>
+                    List<Point> Pixels = CanvasPixelsToFill(triangle);
+                    Parallel.ForEach(Pixels, (point) =>
                     {
-                        double x = canvx2x(i);
-                        double y = canvy2y(j);
-                        int p = (int)Math.Floor(x * Logic.m);
-                        int q = (int)Math.Floor(y * Logic.n);
-                        int r = x > y ? 1 : 0;
-                        Triangle triangle = Logic.Triangles[2 * Logic.n * p + 2 * q + r];
+                        double x = canvx2x(point.X);
+                        double y = canvy2y(point.Y);
                         (double l1, double l2, double l3) = barycentric(x, y, triangle);
                         double z = l1 * triangle.A.z + l2 * triangle.B.z + l3 * triangle.C.z;
-                        Vector3D Normal = l1 * triangle.A.Normal + l2 * triangle.B.Normal + l3 * triangle.C.Normal;
+                        Vector3D N = l1 * triangle.A.Normal + l2 * triangle.B.Normal + l3 * triangle.C.Normal;
                         Vector3D L = new Vector3D(0.5 - x, 0.5 - y, 1 - z);
                         L.Normalize();
-                        double dot = Vector3D.DotProduct(Normal, L);
-                        Vector3D R = 2 * dot * (Normal - L);
+                        double dot = Vector3D.DotProduct(N, L);
+                        Vector3D R = 2 * dot * (N - L);
+                        R.Normalize();
                         int rgb = Convert.ToByte(dot + Vector3D.DotProduct(V, R));
-                        Colors[i, j] = Color.FromArgb(rgb, rgb, rgb);
+                        Colors[point.X, point.Y] = Color.FromArgb(rgb, rgb, rgb);
                     });
                 });
 
