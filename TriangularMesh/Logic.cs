@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media.Media3D;
 
 namespace TriangularMesh
 {
@@ -13,6 +14,13 @@ namespace TriangularMesh
         internal static Triangle[] Triangles;
         internal static int m;
         internal static int n;
+        internal static double DispersedFactor;
+        internal static double SpecularFactor;
+        internal static int SpecularM;
+        internal static Vector3D ToObserver = new Vector3D(0, 0, 1);
+        internal static Vector3D LightSource = new Vector3D(0, 0, 1);
+        internal static Color LightColor = Color.White;
+        internal static Color PlaneColor = Color.Red;
         public static void Recalculate()
         {
             Vertices = new TriangleVertex[m + 1, n + 1];

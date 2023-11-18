@@ -5,22 +5,28 @@ namespace TriangularMesh
 {
     public partial class TriangularMesh : Form
     {
-        Bitmap DrawArea;
+        DirectBitmap DrawArea;
         Pen DrawingPen;
         public TriangularMesh()
         {
             InitializeComponent();
             Logic.z_ControlPoints = new double[4, 4];
+            Logic.z_ControlPoints[0, 0] = -1.0; 
+            Logic.z_ControlPoints[1, 0] = 1.0;
+            Logic.z_ControlPoints[2, 3] = 1.0;
             Logic.m = 5;
             Logic.n = 5;
+            Logic.DispersedFactor = 0.5;
+            Logic.SpecularFactor = 0.5;
+            Logic.SpecularM = 1;
             Logic.Recalculate();
             DrawingPen = new Pen(Brushes.Purple); 
             Redrawing();
         }
         void Redrawing()
         {
-            DrawArea = new Bitmap(Canvas.Width, Canvas.Height);
-            Canvas.Image = DrawArea;
+            DrawArea = new DirectBitmap(Canvas.Width, Canvas.Height);
+            Canvas.Image = DrawArea.Bitmap;
             int WidthCorrected = Canvas.Width - 1;
             int HeightCorrected = Canvas.Height - 1;
 
@@ -88,10 +94,9 @@ namespace TriangularMesh
                 return result;
             }
 
-            using (Graphics g = Graphics.FromImage(DrawArea))
+            using (Graphics g = Graphics.FromImage(DrawArea.Bitmap))
             {
                 Color[,] Colors = new Color[Canvas.Width, Canvas.Height];
-                Vector3D V = new Vector3D(0, 0, 1);
                 Parallel.ForEach(Logic.Triangles, (triangle) =>
                 {
                     List<Point> Pixels = CanvasPixelsToFill(triangle);
@@ -102,13 +107,26 @@ namespace TriangularMesh
                         (double l1, double l2, double l3) = barycentric(x, y, triangle);
                         double z = l1 * triangle.A.z + l2 * triangle.B.z + l3 * triangle.C.z;
                         Vector3D N = l1 * triangle.A.Normal + l2 * triangle.B.Normal + l3 * triangle.C.Normal;
-                        Vector3D L = new Vector3D(0.5 - x, 0.5 - y, 1 - z);
+                        N.Normalize();
+                        Vector3D L = Logic.LightSource - new Vector3D(x, y, z);
                         L.Normalize();
                         double dot = Vector3D.DotProduct(N, L);
                         Vector3D R = 2 * dot * (N - L);
                         R.Normalize();
-                        int rgb = Convert.ToByte(dot + Vector3D.DotProduct(V, R));
-                        Colors[point.X, point.Y] = Color.FromArgb(rgb, rgb, rgb);
+                        double dot2 = Vector3D.DotProduct(Logic.ToObserver, R);
+
+                        double Red = (Logic.LightColor.R / 255.0) * (Logic.PlaneColor.R / 255.0);
+                        double Green = (Logic.LightColor.G / 255.0) * (Logic.PlaneColor.G / 255.0);
+                        double Blue = (Logic.LightColor.B / 255.0) * (Logic.PlaneColor.B / 255.0);
+                        double k = 0;
+                        if (dot > 0) k += Logic.DispersedFactor * dot;
+                        if (dot2 > 0) k += Logic.SpecularFactor * Math.Pow(dot2, Logic.SpecularM);
+                        Red = Math.Min(255, (Red * k) * 255.0);
+                        Green = Math.Min(255, (Green * k) * 255.0);
+                        Blue = Math.Min(255, (Blue * k) * 255.0);
+
+                        Colors[point.X, point.Y] = Color.FromArgb(Convert.ToByte(Red),
+                            Convert.ToByte(Green), Convert.ToByte(Blue));
                     });
                 });
 

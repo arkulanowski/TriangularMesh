@@ -66,7 +66,6 @@ namespace TriangularMesh
             });
 
             Normal = Vector3D.CrossProduct(new Vector3D(1, 0, 3 * z_u), new Vector3D(0, 1, 3 * z_v));
-            Normal.Normalize();
         }
     }
     internal class Triangle
