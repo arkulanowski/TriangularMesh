@@ -30,10 +30,10 @@
         {
             this.Canvas = new System.Windows.Forms.PictureBox();
             this.GroupBox = new System.Windows.Forms.GroupBox();
+            this.ControlPointsVisibleCheckBox = new System.Windows.Forms.CheckBox();
+            this.MeshVisibleCheckBox = new System.Windows.Forms.CheckBox();
             this.y_IntervalCountBar = new System.Windows.Forms.TrackBar();
             this.x_IntervalCountBar = new System.Windows.Forms.TrackBar();
-            this.MeshVisibleCheckBox = new System.Windows.Forms.CheckBox();
-            this.ControlPointsVisibleCheckBox = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.Canvas)).BeginInit();
             this.GroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.y_IntervalCountBar)).BeginInit();
@@ -61,6 +61,31 @@
             this.GroupBox.TabStop = false;
             this.GroupBox.Text = "Tools";
             // 
+            // ControlPointsVisibleCheckBox
+            // 
+            this.ControlPointsVisibleCheckBox.AutoSize = true;
+            this.ControlPointsVisibleCheckBox.Checked = true;
+            this.ControlPointsVisibleCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.ControlPointsVisibleCheckBox.Location = new System.Drawing.Point(6, 149);
+            this.ControlPointsVisibleCheckBox.Name = "ControlPointsVisibleCheckBox";
+            this.ControlPointsVisibleCheckBox.Size = new System.Drawing.Size(138, 19);
+            this.ControlPointsVisibleCheckBox.TabIndex = 3;
+            this.ControlPointsVisibleCheckBox.Text = "Control points visible";
+            this.ControlPointsVisibleCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // MeshVisibleCheckBox
+            // 
+            this.MeshVisibleCheckBox.AutoSize = true;
+            this.MeshVisibleCheckBox.Checked = true;
+            this.MeshVisibleCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.MeshVisibleCheckBox.Location = new System.Drawing.Point(6, 124);
+            this.MeshVisibleCheckBox.Name = "MeshVisibleCheckBox";
+            this.MeshVisibleCheckBox.Size = new System.Drawing.Size(91, 19);
+            this.MeshVisibleCheckBox.TabIndex = 2;
+            this.MeshVisibleCheckBox.Text = "Mesh visible";
+            this.MeshVisibleCheckBox.UseVisualStyleBackColor = true;
+            this.MeshVisibleCheckBox.CheckedChanged += new System.EventHandler(this.MeshVisibleCheckBox_CheckedChanged);
+            // 
             // y_IntervalCountBar
             // 
             this.y_IntervalCountBar.Location = new System.Drawing.Point(6, 73);
@@ -80,30 +105,6 @@
             this.x_IntervalCountBar.Size = new System.Drawing.Size(164, 45);
             this.x_IntervalCountBar.TabIndex = 0;
             this.x_IntervalCountBar.Value = 1;
-            // 
-            // MeshVisibleCheckBox
-            // 
-            this.MeshVisibleCheckBox.AutoSize = true;
-            this.MeshVisibleCheckBox.Checked = true;
-            this.MeshVisibleCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.MeshVisibleCheckBox.Location = new System.Drawing.Point(6, 124);
-            this.MeshVisibleCheckBox.Name = "MeshVisibleCheckBox";
-            this.MeshVisibleCheckBox.Size = new System.Drawing.Size(91, 19);
-            this.MeshVisibleCheckBox.TabIndex = 2;
-            this.MeshVisibleCheckBox.Text = "Mesh visible";
-            this.MeshVisibleCheckBox.UseVisualStyleBackColor = true;
-            // 
-            // ControlPointsVisibleCheckBox
-            // 
-            this.ControlPointsVisibleCheckBox.AutoSize = true;
-            this.ControlPointsVisibleCheckBox.Checked = true;
-            this.ControlPointsVisibleCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.ControlPointsVisibleCheckBox.Location = new System.Drawing.Point(6, 149);
-            this.ControlPointsVisibleCheckBox.Name = "ControlPointsVisibleCheckBox";
-            this.ControlPointsVisibleCheckBox.Size = new System.Drawing.Size(138, 19);
-            this.ControlPointsVisibleCheckBox.TabIndex = 3;
-            this.ControlPointsVisibleCheckBox.Text = "Control points visible";
-            this.ControlPointsVisibleCheckBox.UseVisualStyleBackColor = true;
             // 
             // TriangularMesh
             // 

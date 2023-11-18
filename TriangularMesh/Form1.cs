@@ -40,11 +40,11 @@ namespace TriangularMesh
             }
             double canvx2x(int canvx)
             {
-                return canvx / WidthCorrected;
+                return 1.0 * canvx / WidthCorrected;
             }
             double canvy2y(int canvy)
             {
-                return 1.0 - (canvy / HeightCorrected);
+                return 1.0 - (1.0 * canvy / HeightCorrected);
             }
             (double, double, double) barycentric(double x, double y, Triangle triangle)
             {
@@ -149,6 +149,11 @@ namespace TriangularMesh
                 }
             }
             Canvas.Refresh();
+        }
+
+        private void MeshVisibleCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            Redrawing();
         }
     }
 }
