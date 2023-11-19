@@ -30,8 +30,8 @@
         {
             this.Canvas = new System.Windows.Forms.PictureBox();
             this.ToolsBox = new System.Windows.Forms.GroupBox();
+            this.AnimationButton = new System.Windows.Forms.CheckBox();
             this.FlashlightBox = new System.Windows.Forms.GroupBox();
-            this.LightSourceZBar = new System.Windows.Forms.TrackBar();
             this.LightSourceYBar = new System.Windows.Forms.TrackBar();
             this.LightSourceXBar = new System.Windows.Forms.TrackBar();
             this.SurfaceParametersBox = new System.Windows.Forms.GroupBox();
@@ -45,11 +45,10 @@
             this.MeshVisibleCheckBox = new System.Windows.Forms.CheckBox();
             this.y_IntervalCountBar = new System.Windows.Forms.TrackBar();
             this.x_IntervalCountBar = new System.Windows.Forms.TrackBar();
-            this.AnimationButton = new System.Windows.Forms.CheckBox();
+            this.LightSourceZBar = new System.Windows.Forms.TrackBar();
             ((System.ComponentModel.ISupportInitialize)(this.Canvas)).BeginInit();
             this.ToolsBox.SuspendLayout();
             this.FlashlightBox.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.LightSourceZBar)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.LightSourceYBar)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.LightSourceXBar)).BeginInit();
             this.SurfaceParametersBox.SuspendLayout();
@@ -59,6 +58,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.z_ControlPointBar)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.y_IntervalCountBar)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.x_IntervalCountBar)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.LightSourceZBar)).BeginInit();
             this.SuspendLayout();
             // 
             // Canvas
@@ -89,6 +89,18 @@
             this.ToolsBox.TabStop = false;
             this.ToolsBox.Text = "Tools";
             // 
+            // AnimationButton
+            // 
+            this.AnimationButton.Appearance = System.Windows.Forms.Appearance.Button;
+            this.AnimationButton.AutoSize = true;
+            this.AnimationButton.Location = new System.Drawing.Point(12, 575);
+            this.AnimationButton.Name = "AnimationButton";
+            this.AnimationButton.Size = new System.Drawing.Size(39, 25);
+            this.AnimationButton.TabIndex = 12;
+            this.AnimationButton.Text = "Play";
+            this.AnimationButton.UseVisualStyleBackColor = true;
+            this.AnimationButton.CheckedChanged += new System.EventHandler(this.AnimationButton_CheckedChanged);
+            // 
             // FlashlightBox
             // 
             this.FlashlightBox.Controls.Add(this.LightSourceZBar);
@@ -100,18 +112,6 @@
             this.FlashlightBox.TabIndex = 11;
             this.FlashlightBox.TabStop = false;
             this.FlashlightBox.Text = "Flashlight position";
-            // 
-            // LightSourceZBar
-            // 
-            this.LightSourceZBar.Location = new System.Drawing.Point(6, 124);
-            this.LightSourceZBar.Maximum = 400;
-            this.LightSourceZBar.Minimum = 1;
-            this.LightSourceZBar.Name = "LightSourceZBar";
-            this.LightSourceZBar.Size = new System.Drawing.Size(178, 45);
-            this.LightSourceZBar.TabIndex = 2;
-            this.LightSourceZBar.TickFrequency = 0;
-            this.LightSourceZBar.Value = 100;
-            this.LightSourceZBar.ValueChanged += new System.EventHandler(this.LightSourceZBar_ValueChanged);
             // 
             // LightSourceYBar
             // 
@@ -257,16 +257,17 @@
             this.x_IntervalCountBar.Value = 30;
             this.x_IntervalCountBar.ValueChanged += new System.EventHandler(this.x_IntervalCountBar_ValueChanged);
             // 
-            // AnimationButton
+            // LightSourceZBar
             // 
-            this.AnimationButton.Appearance = System.Windows.Forms.Appearance.Button;
-            this.AnimationButton.AutoSize = true;
-            this.AnimationButton.Location = new System.Drawing.Point(12, 575);
-            this.AnimationButton.Name = "AnimationButton";
-            this.AnimationButton.Size = new System.Drawing.Size(39, 25);
-            this.AnimationButton.TabIndex = 12;
-            this.AnimationButton.Text = "Play";
-            this.AnimationButton.UseVisualStyleBackColor = true;
+            this.LightSourceZBar.Location = new System.Drawing.Point(6, 124);
+            this.LightSourceZBar.Maximum = 400;
+            this.LightSourceZBar.Minimum = 1;
+            this.LightSourceZBar.Name = "LightSourceZBar";
+            this.LightSourceZBar.Size = new System.Drawing.Size(178, 45);
+            this.LightSourceZBar.TabIndex = 2;
+            this.LightSourceZBar.TickFrequency = 0;
+            this.LightSourceZBar.Value = 100;
+            this.LightSourceZBar.ValueChanged += new System.EventHandler(this.LightSourceZBar_ValueChanged);
             // 
             // TriangularMesh
             // 
@@ -282,7 +283,6 @@
             this.ToolsBox.PerformLayout();
             this.FlashlightBox.ResumeLayout(false);
             this.FlashlightBox.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.LightSourceZBar)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.LightSourceYBar)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.LightSourceXBar)).EndInit();
             this.SurfaceParametersBox.ResumeLayout(false);
@@ -293,6 +293,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.z_ControlPointBar)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.y_IntervalCountBar)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.x_IntervalCountBar)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.LightSourceZBar)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -313,9 +314,9 @@
         private TrackBar z_ControlPointBar;
         private GroupBox SurfaceParametersBox;
         private GroupBox FlashlightBox;
-        private TrackBar LightSourceZBar;
         private TrackBar LightSourceYBar;
         private TrackBar LightSourceXBar;
         private CheckBox AnimationButton;
+        private TrackBar LightSourceZBar;
     }
 }

@@ -158,6 +158,20 @@ namespace TriangularMesh
             }
             Canvas.Refresh();
         }
+        async void Animation(int delay)
+        {
+            Vector3D Light = new Vector3D(0.5, 0.5, Logic.LightSource.Z);
+            double theta = 0;
+            int direction = 1;
+            while(AnimationButton.Checked)
+            {
+                Logic.LightSource = Light + new Vector3D(theta / 8 * Math.Cos(theta), theta / 8 * Math.Sin(theta), 0);
+                Redrawing();
+                theta += direction * 0.02;
+                if (Math.Abs(theta) > 4) direction *= -1;
+                await Task.Delay(delay);
+            }
+        }
 
         private void MeshVisibleCheckBox_CheckedChanged(object sender, EventArgs e)
         {
@@ -269,6 +283,25 @@ namespace TriangularMesh
         {
             Logic.LightSource.Z = 1.0 * LightSourceZBar.Value / 100;
             Redrawing();
+        }
+
+        private void AnimationButton_CheckedChanged(object sender, EventArgs e)
+        {
+            if(!AnimationButton.Checked)
+            {
+                Logic.LightSource = new Vector3D(1.0 * LightSourceXBar.Value / 100,
+                    1.0 * LightSourceYBar.Value / 100, 1.0 * LightSourceZBar.Value / 100);
+                Redrawing();
+                LightSourceXBar.Enabled = true;
+                LightSourceYBar.Enabled = true;
+                LightSourceZBar.Enabled = true;
+                return;
+            }
+
+            LightSourceXBar.Enabled = false;
+            LightSourceYBar.Enabled = false;
+            LightSourceZBar.Enabled = false;
+            Animation(16);
         }
     }
 }
