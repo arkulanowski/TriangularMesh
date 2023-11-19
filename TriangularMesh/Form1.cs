@@ -1,3 +1,5 @@
+using System.Drawing.Drawing2D;
+using System.Windows.Forms;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Media3D;
 
@@ -24,6 +26,14 @@ namespace TriangularMesh
             DrawingPen = new Pen(Brushes.Purple);
             DrawArea = new DirectBitmap(Canvas.Width, Canvas.Height);
             Canvas.Image = DrawArea.Bitmap;
+            Logic.SurfaceColor = new Color[Canvas.Width, Canvas.Height];
+            Parallel.For(0, Canvas.Width, (i) =>
+            {
+                Parallel.For(0, Canvas.Height, (j) =>
+                {
+                    Logic.SurfaceColor[i, j] = Color.White;
+                });
+            });
             Redrawing();
         }
         int x2canvx(double x)
@@ -113,9 +123,9 @@ namespace TriangularMesh
                         R.Normalize();
                         double dot2 = Vector3D.DotProduct(Logic.ToObserver, R);
 
-                        double Red = (Logic.LightColor.R / 255.0) * (Logic.SurfaceColor.R / 255.0);
-                        double Green = (Logic.LightColor.G / 255.0) * (Logic.SurfaceColor.G / 255.0);
-                        double Blue = (Logic.LightColor.B / 255.0) * (Logic.SurfaceColor.B / 255.0);
+                        double Red = (Logic.LightColor.R / 255.0) * (Logic.SurfaceColor[point.X, point.Y].R / 255.0);
+                        double Green = (Logic.LightColor.G / 255.0) * (Logic.SurfaceColor[point.X, point.Y].G / 255.0);
+                        double Blue = (Logic.LightColor.B / 255.0) * (Logic.SurfaceColor[point.X, point.Y].B / 255.0);
                         double k = 0;
                         if (dot > 0) k += Logic.DispersedFactor * dot;
                         if (dot2 > 0) k += Logic.SpecularFactor * Math.Pow(dot2, Logic.SpecularM);
@@ -212,7 +222,13 @@ namespace TriangularMesh
             ColorDialog colorDialog = new ColorDialog();
             if (colorDialog.ShowDialog() == DialogResult.OK)
             {
-                Logic.SurfaceColor = colorDialog.Color;
+                Parallel.For(0, Canvas.Width, (i) =>
+                {
+                    Parallel.For(0, Canvas.Height, (j) =>
+                    {
+                        Logic.SurfaceColor[i, j] = colorDialog.Color;
+                    });
+                });
                 Redrawing();
             }
         }
@@ -302,6 +318,31 @@ namespace TriangularMesh
             LightSourceYBar.Enabled = false;
             LightSourceZBar.Enabled = false;
             Animation(16);
+        }
+
+        private void SurfaceImageButton_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog Dialog = new OpenFileDialog();
+            if (Dialog.ShowDialog() == DialogResult.OK)
+            {
+                Bitmap OriginalImage = new Bitmap(Dialog.FileName);
+                Bitmap resizedImage = new Bitmap(Canvas.Width, Canvas.Height);
+
+                using (Graphics g = Graphics.FromImage(resizedImage))
+                {
+                    g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                    g.DrawImage(OriginalImage, 0, 0, Canvas.Width, Canvas.Height);
+                }
+
+                for (int i = 0; i < resizedImage.Width; i++)
+                {
+                    for (int j = 0; j < resizedImage.Height; j++)
+                    {
+                        Logic.SurfaceColor[i, j] = resizedImage.GetPixel(i, j);
+                    }
+                }
+                Redrawing();
+            }
         }
     }
 }

@@ -21,7 +21,7 @@ namespace TriangularMesh
         internal static Vector3D ToObserver = new Vector3D(0.5, 0.5, 1);
         internal static Vector3D LightSource = new Vector3D(0.5, 0.5, 1);
         internal static Color LightColor = Color.White;
-        internal static Color SurfaceColor = Color.White;
+        internal static Color[,] SurfaceColor;
         internal static (int, int) ChosenControlPoint;
         public static void Recalculate()
         {
