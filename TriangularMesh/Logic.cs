@@ -9,6 +9,7 @@ namespace TriangularMesh
 {
     internal static class Logic
     {
+        internal static double[] xy_ControlPoints = { 0, 1.0 / 3, 2.0 / 3, 1 };
         internal static double[,] z_ControlPoints;
         internal static TriangleVertex[,] Vertices;
         internal static Triangle[] Triangles;
@@ -17,10 +18,11 @@ namespace TriangularMesh
         internal static double DispersedFactor;
         internal static double SpecularFactor;
         internal static int SpecularM;
-        internal static Vector3D ToObserver = new Vector3D(0, 0, 1);
-        internal static Vector3D LightSource = new Vector3D(0, 0, 1);
+        internal static Vector3D ToObserver = new Vector3D(0.5, 0.5, 1);
+        internal static Vector3D LightSource = new Vector3D(0.5, 0.5, 1);
         internal static Color LightColor = Color.White;
-        internal static Color PlaneColor = Color.Red;
+        internal static Color SurfaceColor = Color.White;
+        internal static (int, int) ChosenControlPoint;
         public static void Recalculate()
         {
             Vertices = new TriangleVertex[m + 1, n + 1];
@@ -42,8 +44,8 @@ namespace TriangularMesh
             {
                 Parallel.For(0, n, (j) =>
                 {
-                    Triangles[2*n*i + 2*j] = new Triangle(Vertices[i, j], Vertices[i + 1, j], Vertices[i + 1, j + 1]);
-                    Triangles[2*n*i + 2*j + 1] = new Triangle(Vertices[i, j], Vertices[i, j + 1], Vertices[i + 1, j + 1]);
+                    Triangles[2 * n * i + 2 * j] = new Triangle(Vertices[i, j], Vertices[i + 1, j], Vertices[i + 1, j + 1]);
+                    Triangles[2 * n * i + 2 * j + 1] = new Triangle(Vertices[i, j], Vertices[i, j + 1], Vertices[i + 1, j + 1]);
                 });
             });
         }

@@ -5,47 +5,45 @@ namespace TriangularMesh
 {
     public partial class TriangularMesh : Form
     {
+        const int CONTROL_POINT_RADIUS = 5;
+        const int CONTROL_POINT_CLICK_DIST = 30;
         DirectBitmap DrawArea;
+        Brush DrawingBrush;
         Pen DrawingPen;
         public TriangularMesh()
         {
             InitializeComponent();
             Logic.z_ControlPoints = new double[4, 4];
-            Logic.z_ControlPoints[0, 0] = -1.0; 
-            Logic.z_ControlPoints[1, 0] = 1.0;
-            Logic.z_ControlPoints[2, 3] = 1.0;
-            Logic.m = 5;
-            Logic.n = 5;
+            Logic.m = 30;
+            Logic.n = 30;
             Logic.DispersedFactor = 0.5;
             Logic.SpecularFactor = 0.5;
             Logic.SpecularM = 1;
             Logic.Recalculate();
-            DrawingPen = new Pen(Brushes.Purple); 
+            DrawingBrush = Brushes.White;
+            DrawingPen = new Pen(Brushes.Purple);
+            DrawArea = new DirectBitmap(Canvas.Width, Canvas.Height);
+            Canvas.Image = DrawArea.Bitmap;
             Redrawing();
+        }
+        int x2canvx(double x)
+        {
+            return Convert.ToInt32((Canvas.Width - 1) * x);
+        }
+        int y2canvy(double y)
+        {
+            return Convert.ToInt32((Canvas.Height - 1) * (1 - y));
+        }
+        double canvx2x(int canvx)
+        {
+            return 1.0 * canvx / (Canvas.Width - 1);
+        }
+        double canvy2y(int canvy)
+        {
+            return 1.0 - (1.0 * canvy / (Canvas.Height - 1));
         }
         void Redrawing()
         {
-            DrawArea = new DirectBitmap(Canvas.Width, Canvas.Height);
-            Canvas.Image = DrawArea.Bitmap;
-            int WidthCorrected = Canvas.Width - 1;
-            int HeightCorrected = Canvas.Height - 1;
-
-            int x2canvx(double x)
-            {
-                return Convert.ToInt32(WidthCorrected * x);
-            }
-            int y2canvy(double y)
-            {
-                return Convert.ToInt32(HeightCorrected * (1 - y));
-            }
-            double canvx2x(int canvx)
-            {
-                return 1.0 * canvx / WidthCorrected;
-            }
-            double canvy2y(int canvy)
-            {
-                return 1.0 - (1.0 * canvy / HeightCorrected);
-            }
             (double, double, double) barycentric(double x, double y, Triangle triangle)
             {
                 TriangleVertex A = triangle.A;
@@ -115,9 +113,9 @@ namespace TriangularMesh
                         R.Normalize();
                         double dot2 = Vector3D.DotProduct(Logic.ToObserver, R);
 
-                        double Red = (Logic.LightColor.R / 255.0) * (Logic.PlaneColor.R / 255.0);
-                        double Green = (Logic.LightColor.G / 255.0) * (Logic.PlaneColor.G / 255.0);
-                        double Blue = (Logic.LightColor.B / 255.0) * (Logic.PlaneColor.B / 255.0);
+                        double Red = (Logic.LightColor.R / 255.0) * (Logic.SurfaceColor.R / 255.0);
+                        double Green = (Logic.LightColor.G / 255.0) * (Logic.SurfaceColor.G / 255.0);
+                        double Blue = (Logic.LightColor.B / 255.0) * (Logic.SurfaceColor.B / 255.0);
                         double k = 0;
                         if (dot > 0) k += Logic.DispersedFactor * dot;
                         if (dot2 > 0) k += Logic.SpecularFactor * Math.Pow(dot2, Logic.SpecularM);
@@ -125,11 +123,9 @@ namespace TriangularMesh
                         Green = Math.Min(255, (Green * k) * 255.0);
                         Blue = Math.Min(255, (Blue * k) * 255.0);
 
-                        Colors[point.X, point.Y] = Color.FromArgb(Convert.ToByte(Red),
-                            Convert.ToByte(Green), Convert.ToByte(Blue));
+                        Colors[point.X, point.Y] = Color.FromArgb((byte)Red, (byte)Green, (byte)Blue);
                     });
                 });
-
                 for(int i = 0; i < Canvas.Width; ++i)
                 {
                     for(int j = 0; j < Canvas.Height; ++j)
@@ -147,12 +143,131 @@ namespace TriangularMesh
                     g.DrawLine(DrawingPen, A, C);
                     g.DrawLine(DrawingPen, B, C);
                 }
+                if(ControlPointsVisibleCheckBox.Checked)
+                {
+                    for(int i = 0; i < 4; ++i)
+                    {
+                        for(int j = 0; j < 4; ++j)
+                        {
+                            g.FillEllipse(DrawingBrush, x2canvx(Logic.xy_ControlPoints[i]) - CONTROL_POINT_RADIUS,
+                                y2canvy(Logic.xy_ControlPoints[j]) - CONTROL_POINT_RADIUS,
+                                2 * CONTROL_POINT_RADIUS, 2 * CONTROL_POINT_RADIUS);
+                        }
+                    }
+                }
             }
             Canvas.Refresh();
         }
 
         private void MeshVisibleCheckBox_CheckedChanged(object sender, EventArgs e)
         {
+            Redrawing();
+        }
+
+        private void ControlPointsVisibleCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            Redrawing();
+        }
+
+        private void x_IntervalCountBar_ValueChanged(object sender, EventArgs e)
+        {
+            Logic.m = x_IntervalCountBar.Value;
+            Logic.Recalculate();
+            Redrawing();
+        }
+
+        private void y_IntervalCountBar_ValueChanged(object sender, EventArgs e)
+        {
+            Logic.n = y_IntervalCountBar.Value;
+            Logic.Recalculate();
+            Redrawing();
+        }
+
+        private void LightColorButton_Click(object sender, EventArgs e)
+        {
+            ColorDialog colorDialog = new ColorDialog();
+            if (colorDialog.ShowDialog() == DialogResult.OK)
+            {
+                Logic.LightColor = colorDialog.Color;
+                Redrawing();
+            }
+        }
+
+        private void SurfaceColorButton_Click(object sender, EventArgs e)
+        {
+            ColorDialog colorDialog = new ColorDialog();
+            if (colorDialog.ShowDialog() == DialogResult.OK)
+            {
+                Logic.SurfaceColor = colorDialog.Color;
+                Redrawing();
+            }
+        }
+
+        private void DispersedTrackBar_ValueChanged(object sender, EventArgs e)
+        {
+            Logic.DispersedFactor = 1.0 * DispersedTrackBar.Value / 100;
+            Redrawing();
+        }
+
+        private void SpecularTrackBar_ValueChanged(object sender, EventArgs e)
+        {
+            Logic.SpecularFactor = 1.0 * SpecularTrackBar.Value / 100;
+            Redrawing();
+        }
+
+        private void SpecularMTrackBar_ValueChanged(object sender, EventArgs e)
+        {
+            Logic.SpecularM = SpecularMTrackBar.Value;
+            Redrawing();
+        }
+
+        private void Canvas_MouseClick(object sender, MouseEventArgs e)
+        {
+            if(!ControlPointsVisibleCheckBox.Checked)
+            {
+                z_ControlPointBar.Enabled = false;
+                return;
+            }
+
+            (double xpos, double ypos) = (canvx2x(e.X), canvy2y(e.Y));
+            (int i, int j) = ((int)Math.Floor(3 * xpos + 0.5), (int)Math.Floor(3 * ypos + 0.5));
+            (double xnear, double ynear) = (Logic.xy_ControlPoints[i], Logic.xy_ControlPoints[j]);
+
+            if (CONTROL_POINT_CLICK_DIST < (x2canvx(xnear) - e.X) * (x2canvx(xnear) - e.X) +
+                (y2canvy(ynear) - e.Y) * (y2canvy(ynear) - e.Y))
+            {
+                z_ControlPointBar.Enabled = false;
+                return;
+            }
+
+            Logic.ChosenControlPoint = (i, j);
+            z_ControlPointBar.Value = Convert.ToInt32(100 * Logic.z_ControlPoints[i, j]);
+            z_ControlPointBar.Enabled = true;
+        }
+
+        private void z_ControlPointBar_ValueChanged(object sender, EventArgs e)
+        {
+            Logic.z_ControlPoints[Logic.ChosenControlPoint.Item1, Logic.ChosenControlPoint.Item2]
+                = 1.0 * z_ControlPointBar.Value / 100;
+            Logic.Recalculate();
+            Redrawing();
+        }
+
+        private void LightSourceXBar_ValueChanged(object sender, EventArgs e)
+        {
+            Logic.LightSource.X = 1.0 * LightSourceXBar.Value / 100;
+            Redrawing();
+        }
+
+        private void LightSourceYBar_ValueChanged(object sender, EventArgs e)
+        {
+            Logic.LightSource.Y = 1.0 * LightSourceYBar.Value / 100;
+            Redrawing();
+        }
+
+        private void LightSourceZBar_ValueChanged(object sender, EventArgs e)
+        {
+            Logic.LightSource.Z = 1.0 * LightSourceZBar.Value / 100;
             Redrawing();
         }
     }
