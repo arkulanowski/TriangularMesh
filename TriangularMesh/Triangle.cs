@@ -18,6 +18,8 @@ namespace TriangularMesh
         double[] By = new double[4];
         double[] delBx = new double[3];
         double[] delBy = new double[3];
+        public Vector3D TangentX;
+        public Vector3D TangentY;
         public Vector3D Normal;
         public TriangleVertex(double x, double y)
         {
@@ -92,7 +94,9 @@ namespace TriangularMesh
                 }
             });
 
-            Normal = Vector3D.CrossProduct(new Vector3D(1, 0, 3 * z_u), new Vector3D(0, 1, 3 * z_v));
+            TangentX = new Vector3D(1, 0, 3 * z_u);
+            TangentY = new Vector3D(0, 1, 3 * z_v);
+            Normal = Vector3D.CrossProduct(TangentX, TangentY);
         }
     }
     internal class Triangle

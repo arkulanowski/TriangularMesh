@@ -20,13 +20,14 @@ namespace TriangularMesh
             Logic.n = 30;
             Logic.DispersedFactor = 0.5;
             Logic.SpecularFactor = 0.5;
-            Logic.SpecularM = 1;
+            Logic.SpecularM = 50;
             Logic.Recalculate();
             DrawingBrush = Brushes.Purple;
-            DrawingPen = new Pen(Brushes.Purple);
+            DrawingPen = new Pen(Brushes.Yellow);
             DrawArea = new DirectBitmap(Canvas.Width, Canvas.Height);
             Canvas.Image = DrawArea.Bitmap;
             Logic.SurfaceColor = new Color[Canvas.Width, Canvas.Height];
+            Logic.ImportedNormalMapRGBNormalized = new Vector3D[Canvas.Width, Canvas.Height];
             Parallel.For(0, Canvas.Width, (i) =>
             {
                 Parallel.For(0, Canvas.Height, (j) =>
@@ -116,6 +117,18 @@ namespace TriangularMesh
                         double z = l1 * triangle.A.z + l2 * triangle.B.z + l3 * triangle.C.z;
                         Vector3D N = l1 * triangle.A.Normal + l2 * triangle.B.Normal + l3 * triangle.C.Normal;
                         N.Normalize();
+                        if(Logic.UsingNormalMap)
+                        {
+                            Vector3D NTexture = Logic.ImportedNormalMapRGBNormalized[point.X, point.Y];
+                            Vector3D TangentX = l1 * triangle.A.TangentX + l2 * triangle.B.TangentX + l3 * triangle.C.TangentX;
+                            TangentX.Normalize();
+                            Vector3D TangentY = l1 * triangle.A.TangentY + l2 * triangle.B.TangentY + l3 * triangle.C.TangentY;
+                            TangentY.Normalize();
+
+                            N = new Vector3D(TangentX.X * NTexture.X + TangentY.X * NTexture.Y + N.X * NTexture.Z,
+                                TangentX.Y * NTexture.X + TangentY.Y * NTexture.Y + N.Y * NTexture.Z,
+                                TangentX.Z * NTexture.X + TangentY.Z * NTexture.Y + N.Z * NTexture.Z);
+                        }
                         Vector3D L = Logic.LightSource - new Vector3D(x, y, z);
                         L.Normalize();
                         double dot = Vector3D.DotProduct(N, L);
@@ -134,8 +147,6 @@ namespace TriangularMesh
                         Blue = Math.Min(255, (Blue * k) * 255.0);
 
                         Colors[point.X, point.Y] = Color.FromArgb((byte)Red, (byte)Green, (byte)Blue);
-                        //Colors[point.X, point.Y] = Color.FromArgb((byte)((N.X + 1.0) * 128.0), (byte)((N.Z + 1.0) * 128.0),
-                        //    (byte)((N.Y + 1.0) * 128.0));
                     });
                 });
                 for(int i = 0; i < Canvas.Width; ++i)
@@ -177,7 +188,7 @@ namespace TriangularMesh
             int direction = 1;
             while(AnimationButton.Checked)
             {
-                Logic.LightSource = Light + new Vector3D(theta / 8 * Math.Cos(theta), theta / 8 * Math.Sin(theta), 0);
+                Logic.LightSource = Light + new Vector3D(theta / 8 * Math.Cos(4 * theta), theta / 8 * Math.Sin(4 * theta), 0);
                 Redrawing();
                 theta += direction * 0.02;
                 if (Math.Abs(theta) > 4) direction *= -1;
@@ -319,7 +330,7 @@ namespace TriangularMesh
             LightSourceXBar.Enabled = false;
             LightSourceYBar.Enabled = false;
             LightSourceZBar.Enabled = false;
-            Animation(16);
+            Animation(17);
         }
 
         private void SurfaceImageButton_Click(object sender, EventArgs e)
@@ -327,6 +338,15 @@ namespace TriangularMesh
             OpenFileDialog Dialog = new OpenFileDialog();
             if (Dialog.ShowDialog() == DialogResult.OK)
             {
+                try
+                {
+                    Bitmap Check = new Bitmap(Dialog.FileName);
+                }
+                catch
+                {
+                    return;
+                }
+
                 Bitmap OriginalImage = new Bitmap(Dialog.FileName);
                 Bitmap resizedImage = new Bitmap(Canvas.Width, Canvas.Height);
 
@@ -345,6 +365,65 @@ namespace TriangularMesh
                 }
                 Redrawing();
             }
+        }
+
+        private void NormalMapButton_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog Dialog = new OpenFileDialog();
+            if (Dialog.ShowDialog() == DialogResult.OK)
+            {
+                try
+                {
+                    Bitmap Check = new Bitmap(Dialog.FileName);
+                }
+                catch
+                {
+                    return;
+                }
+
+                Bitmap OriginalMap = new Bitmap(Dialog.FileName);
+                Bitmap resizedMap = new Bitmap(Canvas.Width, Canvas.Height);
+                Color[,] ImportedNormalMap = new Color[Canvas.Width, Canvas.Height];
+
+                using (Graphics g = Graphics.FromImage(resizedMap))
+                {
+                    g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                    g.DrawImage(OriginalMap, 0, 0, Canvas.Width, Canvas.Height);
+                }
+
+                for (int i = 0; i < resizedMap.Width; i++)
+                {
+                    for (int j = 0; j < resizedMap.Height; j++)
+                    {
+                        ImportedNormalMap[i, j] = resizedMap.GetPixel(i, j);
+                    }
+                }
+
+                double RGBNormalizer(int val)
+                {
+                    return (val - 127.5) / 127.5;
+                }
+
+                Parallel.For(0, Canvas.Width, (i) =>
+                {
+                    Parallel.For(0, Canvas.Height, (j) =>
+                    {
+                        Logic.ImportedNormalMapRGBNormalized[i, j] = new Vector3D(RGBNormalizer(ImportedNormalMap[i, j].R),
+                            RGBNormalizer(ImportedNormalMap[i, j].G),
+                            RGBNormalizer(ImportedNormalMap[i, j].B));
+                        Logic.ImportedNormalMapRGBNormalized[i, j].Normalize();
+                    });
+                });
+
+                Logic.UsingNormalMap = true;
+                Redrawing();
+            }
+        }
+
+        private void ClearNormalMapButton_Click(object sender, EventArgs e)
+        {
+            Logic.UsingNormalMap = false;
+            Redrawing();
         }
     }
 }

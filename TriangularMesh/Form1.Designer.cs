@@ -30,6 +30,8 @@
         {
             this.Canvas = new System.Windows.Forms.PictureBox();
             this.ToolsBox = new System.Windows.Forms.GroupBox();
+            this.ClearNormalMapButton = new System.Windows.Forms.Button();
+            this.NormalMapButton = new System.Windows.Forms.Button();
             this.SurfaceImageButton = new System.Windows.Forms.Button();
             this.AnimationButton = new System.Windows.Forms.CheckBox();
             this.FlashlightBox = new System.Windows.Forms.GroupBox();
@@ -73,6 +75,8 @@
             // 
             // ToolsBox
             // 
+            this.ToolsBox.Controls.Add(this.ClearNormalMapButton);
+            this.ToolsBox.Controls.Add(this.NormalMapButton);
             this.ToolsBox.Controls.Add(this.SurfaceImageButton);
             this.ToolsBox.Controls.Add(this.AnimationButton);
             this.ToolsBox.Controls.Add(this.FlashlightBox);
@@ -90,6 +94,26 @@
             this.ToolsBox.TabIndex = 1;
             this.ToolsBox.TabStop = false;
             this.ToolsBox.Text = "Tools";
+            // 
+            // ClearNormalMapButton
+            // 
+            this.ClearNormalMapButton.Location = new System.Drawing.Point(12, 628);
+            this.ClearNormalMapButton.Name = "ClearNormalMapButton";
+            this.ClearNormalMapButton.Size = new System.Drawing.Size(59, 23);
+            this.ClearNormalMapButton.TabIndex = 15;
+            this.ClearNormalMapButton.Text = "No map";
+            this.ClearNormalMapButton.UseVisualStyleBackColor = true;
+            this.ClearNormalMapButton.Click += new System.EventHandler(this.ClearNormalMapButton_Click);
+            // 
+            // NormalMapButton
+            // 
+            this.NormalMapButton.Location = new System.Drawing.Point(121, 576);
+            this.NormalMapButton.Name = "NormalMapButton";
+            this.NormalMapButton.Size = new System.Drawing.Size(75, 23);
+            this.NormalMapButton.TabIndex = 14;
+            this.NormalMapButton.Text = "NormMap";
+            this.NormalMapButton.UseVisualStyleBackColor = true;
+            this.NormalMapButton.Click += new System.EventHandler(this.NormalMapButton_Click);
             // 
             // SurfaceImageButton
             // 
@@ -180,7 +204,7 @@
             this.SpecularMTrackBar.Size = new System.Drawing.Size(179, 45);
             this.SpecularMTrackBar.TabIndex = 8;
             this.SpecularMTrackBar.TickFrequency = 0;
-            this.SpecularMTrackBar.Value = 1;
+            this.SpecularMTrackBar.Value = 50;
             this.SpecularMTrackBar.ValueChanged += new System.EventHandler(this.SpecularMTrackBar_ValueChanged);
             // 
             // SpecularTrackBar
@@ -288,6 +312,8 @@
             this.ClientSize = new System.Drawing.Size(884, 681);
             this.Controls.Add(this.ToolsBox);
             this.Controls.Add(this.Canvas);
+            this.MaximumSize = new System.Drawing.Size(900, 720);
+            this.MinimumSize = new System.Drawing.Size(900, 720);
             this.Name = "TriangularMesh";
             this.Text = "TriangularMesh";
             ((System.ComponentModel.ISupportInitialize)(this.Canvas)).EndInit();
@@ -331,5 +357,7 @@
         private CheckBox AnimationButton;
         private TrackBar LightSourceZBar;
         private Button SurfaceImageButton;
+        private Button NormalMapButton;
+        private Button ClearNormalMapButton;
     }
 }
