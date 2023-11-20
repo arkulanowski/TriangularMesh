@@ -22,7 +22,7 @@ namespace TriangularMesh
             Logic.SpecularFactor = 0.5;
             Logic.SpecularM = 1;
             Logic.Recalculate();
-            DrawingBrush = Brushes.White;
+            DrawingBrush = Brushes.Purple;
             DrawingPen = new Pen(Brushes.Purple);
             DrawArea = new DirectBitmap(Canvas.Width, Canvas.Height);
             Canvas.Image = DrawArea.Bitmap;
@@ -119,7 +119,7 @@ namespace TriangularMesh
                         Vector3D L = Logic.LightSource - new Vector3D(x, y, z);
                         L.Normalize();
                         double dot = Vector3D.DotProduct(N, L);
-                        Vector3D R = 2 * dot * (N - L);
+                        Vector3D R = 2 * dot * N - L;
                         R.Normalize();
                         double dot2 = Vector3D.DotProduct(Logic.ToObserver, R);
 
@@ -134,6 +134,8 @@ namespace TriangularMesh
                         Blue = Math.Min(255, (Blue * k) * 255.0);
 
                         Colors[point.X, point.Y] = Color.FromArgb((byte)Red, (byte)Green, (byte)Blue);
+                        //Colors[point.X, point.Y] = Color.FromArgb((byte)((N.X + 1.0) * 128.0), (byte)((N.Z + 1.0) * 128.0),
+                        //    (byte)((N.Y + 1.0) * 128.0));
                     });
                 });
                 for(int i = 0; i < Canvas.Width; ++i)

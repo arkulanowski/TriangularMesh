@@ -34,10 +34,19 @@ namespace TriangularMesh
             z = 0;
             Parallel.For(0, 4, (i) =>
             {
+                double thread_z = 0;
                 Parallel.For(0, 4, (j) =>
                 {
-                    z += Logic.z_ControlPoints[i, j] * Bx[i] * By[j];
+                    lock(this)
+                    {
+                        thread_z += Logic.z_ControlPoints[i, j] * Bx[i] * By[j];
+                    }
                 });
+
+                lock(this)
+                {
+                    z += thread_z;
+                }
             });
         }
         public void CalculateNormal()
@@ -52,17 +61,35 @@ namespace TriangularMesh
             double z_v = 0;
             Parallel.For(0, 3, (i) =>
             {
+                double thread_z_u = 0;
                 Parallel.For(0, 4, (j) =>
                 {
-                    z_u += (Logic.z_ControlPoints[i + 1, j] - Logic.z_ControlPoints[i, j]) * delBx[i] * By[j];
+                    lock(this)
+                    {
+                        thread_z_u += (Logic.z_ControlPoints[i + 1, j] - Logic.z_ControlPoints[i, j]) * delBx[i] * By[j];
+                    }
                 });
+
+                lock(this)
+                {
+                    z_u += thread_z_u;
+                }
             });
             Parallel.For(0, 4, (i) =>
             {
+                double thread_z_v = 0;
                 Parallel.For(0, 3, (j) =>
                 {
-                    z_v += (Logic.z_ControlPoints[i, j + 1] - Logic.z_ControlPoints[i, j]) * Bx[i] * delBy[j];
+                    lock(this)
+                    {
+                        thread_z_v += (Logic.z_ControlPoints[i, j + 1] - Logic.z_ControlPoints[i, j]) * Bx[i] * delBy[j];
+                    }
                 });
+
+                lock(this)
+                {
+                    z_v += thread_z_v;
+                }
             });
 
             Normal = Vector3D.CrossProduct(new Vector3D(1, 0, 3 * z_u), new Vector3D(0, 1, 3 * z_v));

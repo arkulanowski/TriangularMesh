@@ -18,7 +18,7 @@ namespace TriangularMesh
         internal static double DispersedFactor;
         internal static double SpecularFactor;
         internal static int SpecularM;
-        internal static Vector3D ToObserver = new Vector3D(0.5, 0.5, 1);
+        internal static Vector3D ToObserver = new Vector3D(0, 0, 1);
         internal static Vector3D LightSource = new Vector3D(0.5, 0.5, 1);
         internal static Color LightColor = Color.White;
         internal static Color[,] SurfaceColor;
