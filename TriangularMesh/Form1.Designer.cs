@@ -30,6 +30,7 @@
         {
             this.Canvas = new System.Windows.Forms.PictureBox();
             this.ToolsBox = new System.Windows.Forms.GroupBox();
+            this.ImportFoxMapButton = new System.Windows.Forms.Button();
             this.ClearNormalMapButton = new System.Windows.Forms.Button();
             this.NormalMapButton = new System.Windows.Forms.Button();
             this.SurfaceImageButton = new System.Windows.Forms.Button();
@@ -75,6 +76,7 @@
             // 
             // ToolsBox
             // 
+            this.ToolsBox.Controls.Add(this.ImportFoxMapButton);
             this.ToolsBox.Controls.Add(this.ClearNormalMapButton);
             this.ToolsBox.Controls.Add(this.NormalMapButton);
             this.ToolsBox.Controls.Add(this.SurfaceImageButton);
@@ -94,6 +96,16 @@
             this.ToolsBox.TabIndex = 1;
             this.ToolsBox.TabStop = false;
             this.ToolsBox.Text = "Tools";
+            // 
+            // ImportFoxMapButton
+            // 
+            this.ImportFoxMapButton.Location = new System.Drawing.Point(149, 628);
+            this.ImportFoxMapButton.Name = "ImportFoxMapButton";
+            this.ImportFoxMapButton.Size = new System.Drawing.Size(41, 23);
+            this.ImportFoxMapButton.TabIndex = 16;
+            this.ImportFoxMapButton.Text = "Fox";
+            this.ImportFoxMapButton.UseVisualStyleBackColor = true;
+            this.ImportFoxMapButton.Click += new System.EventHandler(this.ImportFoxMapButton_Click);
             // 
             // ClearNormalMapButton
             // 
@@ -359,5 +371,6 @@
         private Button SurfaceImageButton;
         private Button NormalMapButton;
         private Button ClearNormalMapButton;
+        private Button ImportFoxMapButton;
     }
 }

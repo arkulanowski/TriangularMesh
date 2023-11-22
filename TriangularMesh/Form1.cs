@@ -2,13 +2,14 @@ using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Media3D;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
 namespace TriangularMesh
 {
     public partial class TriangularMesh : Form
     {
-        const int CONTROL_POINT_RADIUS = 5;
-        const int CONTROL_POINT_CLICK_DIST = 30;
+        const int CONTROL_POINT_RADIUS = 6;
+        const int CONTROL_POINT_CLICK_DIST = 40;
         DirectBitmap DrawArea;
         Brush DrawingBrush;
         Pen DrawingPen;
@@ -22,8 +23,8 @@ namespace TriangularMesh
             Logic.SpecularFactor = 0.5;
             Logic.SpecularM = 50;
             Logic.Recalculate();
-            DrawingBrush = Brushes.Purple;
-            DrawingPen = new Pen(Brushes.Yellow);
+            DrawingBrush = Brushes.Black;
+            DrawingPen = new Pen(Brushes.Black);
             DrawArea = new DirectBitmap(Canvas.Width, Canvas.Height);
             Canvas.Image = DrawArea.Bitmap;
             Logic.SurfaceColor = new Color[Canvas.Width, Canvas.Height];
@@ -367,6 +368,46 @@ namespace TriangularMesh
             }
         }
 
+        void ImportNormalMap(string path)
+        {
+            Bitmap OriginalMap = new Bitmap(path);
+            Bitmap resizedMap = new Bitmap(Canvas.Width, Canvas.Height);
+            Color[,] ImportedNormalMap = new Color[Canvas.Width, Canvas.Height];
+
+            using (Graphics g = Graphics.FromImage(resizedMap))
+            {
+                g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                g.DrawImage(OriginalMap, 0, 0, Canvas.Width, Canvas.Height);
+            }
+
+            for (int i = 0; i < resizedMap.Width; i++)
+            {
+                for (int j = 0; j < resizedMap.Height; j++)
+                {
+                    ImportedNormalMap[i, j] = resizedMap.GetPixel(i, j);
+                }
+            }
+
+            double RGBNormalizer(int val)
+            {
+                return (val - 127.5) / 127.5;
+            }
+
+            Parallel.For(0, Canvas.Width, (i) =>
+            {
+                Parallel.For(0, Canvas.Height, (j) =>
+                {
+                    Logic.ImportedNormalMapRGBNormalized[i, j] = new Vector3D(RGBNormalizer(ImportedNormalMap[i, j].R),
+                        RGBNormalizer(ImportedNormalMap[i, j].G),
+                        RGBNormalizer(ImportedNormalMap[i, j].B));
+                    Logic.ImportedNormalMapRGBNormalized[i, j].Normalize();
+                });
+            });
+
+            Logic.UsingNormalMap = true;
+            Redrawing();
+        }
+
         private void NormalMapButton_Click(object sender, EventArgs e)
         {
             OpenFileDialog Dialog = new OpenFileDialog();
@@ -380,50 +421,20 @@ namespace TriangularMesh
                 {
                     return;
                 }
-
-                Bitmap OriginalMap = new Bitmap(Dialog.FileName);
-                Bitmap resizedMap = new Bitmap(Canvas.Width, Canvas.Height);
-                Color[,] ImportedNormalMap = new Color[Canvas.Width, Canvas.Height];
-
-                using (Graphics g = Graphics.FromImage(resizedMap))
-                {
-                    g.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                    g.DrawImage(OriginalMap, 0, 0, Canvas.Width, Canvas.Height);
-                }
-
-                for (int i = 0; i < resizedMap.Width; i++)
-                {
-                    for (int j = 0; j < resizedMap.Height; j++)
-                    {
-                        ImportedNormalMap[i, j] = resizedMap.GetPixel(i, j);
-                    }
-                }
-
-                double RGBNormalizer(int val)
-                {
-                    return (val - 127.5) / 127.5;
-                }
-
-                Parallel.For(0, Canvas.Width, (i) =>
-                {
-                    Parallel.For(0, Canvas.Height, (j) =>
-                    {
-                        Logic.ImportedNormalMapRGBNormalized[i, j] = new Vector3D(RGBNormalizer(ImportedNormalMap[i, j].R),
-                            RGBNormalizer(ImportedNormalMap[i, j].G),
-                            RGBNormalizer(ImportedNormalMap[i, j].B));
-                        Logic.ImportedNormalMapRGBNormalized[i, j].Normalize();
-                    });
-                });
-
-                Logic.UsingNormalMap = true;
-                Redrawing();
             }
+
+            ImportNormalMap(Dialog.FileName);
         }
 
         private void ClearNormalMapButton_Click(object sender, EventArgs e)
         {
             Logic.UsingNormalMap = false;
             Redrawing();
+        }
+
+        private void ImportFoxMapButton_Click(object sender, EventArgs e)
+        {
+            ImportNormalMap("Image/foxmap.png");
         }
     }
 }

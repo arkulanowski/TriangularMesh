@@ -12,4 +12,10 @@
     <PackageReference Include="EPP.PresentationCore" Version="1.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Image\foxmap.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
