@@ -107,7 +107,7 @@ namespace TriangularMesh
             using (Graphics g = Graphics.FromImage(DrawArea.Bitmap))
             {
                 Color[,] Colors = new Color[Canvas.Width, Canvas.Height];
-                if(!NoDrawingCheckBox.Checked) Parallel.ForEach(Logic.Triangles, (triangle) =>
+                Parallel.ForEach(Logic.Triangles, (triangle) =>
                 {
                     List<Point> Pixels = CanvasPixelsToFill(triangle);
                     Parallel.ForEach(Pixels, (point) =>
@@ -118,7 +118,7 @@ namespace TriangularMesh
                         double z = l1 * triangle.A.z + l2 * triangle.B.z + l3 * triangle.C.z;
                         Vector3D N = l1 * triangle.A.Normal + l2 * triangle.B.Normal + l3 * triangle.C.Normal;
                         N.Normalize();
-                        if(Logic.UsingNormalMap)
+                        if (Logic.UsingNormalMap)
                         {
                             Vector3D NTexture = Logic.ImportedNormalMapRGBNormalized[point.X, point.Y];
                             Vector3D TangentX = l1 * triangle.A.TangentX + l2 * triangle.B.TangentX + l3 * triangle.C.TangentX;
@@ -143,29 +143,56 @@ namespace TriangularMesh
                         double k = 0;
                         if (dot > 0) k += Logic.DispersedFactor * dot;
                         if (dot2 > 0) k += Logic.SpecularFactor * Math.Pow(dot2, Logic.SpecularM);
-                        Red = Math.Min(255, (Red * k) * 255.0);
-                        Green = Math.Min(255, (Green * k) * 255.0);
-                        Blue = Math.Min(255, (Blue * k) * 255.0);
+                        Red *= k;
+                        Green *= k;
+                        Blue *= k;
+                        if (MainLightOutCheckBox.Checked) (Red, Green, Blue) = (0.0, 0.0, 0.0);
+
+                        if(SpotlightsOnButton.Checked)
+                        {
+                            Vector3D RedReflectorPosition = new Vector3D(0, 0, Logic.LightSource.Z);
+                            Vector3D GreenReflectorPosition = new Vector3D(1, 0, Logic.LightSource.Z);
+                            Vector3D BlueReflectorPosition = new Vector3D(0.5, 1, Logic.LightSource.Z);
+                            Vector3D LRed = RedReflectorPosition - new Vector3D(x, y, z);
+                            Vector3D LGreen = GreenReflectorPosition - new Vector3D(x, y, z);
+                            Vector3D LBlue = BlueReflectorPosition - new Vector3D(x, y, z);
+                            LRed.Normalize(); LGreen.Normalize(); LBlue.Normalize();
+                            Vector3D Target = new Vector3D(0.5, 0.5, 0);
+                            Vector3D DRed = RedReflectorPosition - Target;
+                            Vector3D DGreen = GreenReflectorPosition - Target;
+                            Vector3D DBlue = BlueReflectorPosition - Target;
+                            DRed.Normalize(); DGreen.Normalize(); DBlue.Normalize();
+                            int CosinePower = Logic.SpotlightCosinePower;
+                            double ILRed = Math.Pow(Math.Max(0, Vector3D.DotProduct(LRed, DRed)), CosinePower);
+                            double ILGreen = Math.Pow(Math.Max(0, Vector3D.DotProduct(LGreen, DGreen)), CosinePower);
+                            double ILBlue = Math.Pow(Math.Max(0, Vector3D.DotProduct(LBlue, DBlue)), CosinePower);
+
+                            double RedColor = ILRed * (Logic.DispersedFactor * Math.Max(0, Vector3D.DotProduct(N, LRed))
+                            + Logic.SpecularFactor * Math.Pow(dot2, Logic.SpecularM));
+                            Red += RedColor;
+                            double GreenColor = ILGreen * (Logic.DispersedFactor * Math.Max(0, Vector3D.DotProduct(N, LGreen))
+                            + Logic.SpecularFactor * Math.Pow(dot2, Logic.SpecularM));
+                            Green += GreenColor;
+                            double BlueColor = ILBlue * (Logic.DispersedFactor * Math.Max(0, Vector3D.DotProduct(N, LBlue))
+                            + Logic.SpecularFactor * Math.Pow(dot2, Logic.SpecularM));
+                            Blue += BlueColor;
+                        }
+
+                        Red = Math.Min(255, Red * 255.0);
+                        Green = Math.Min(255, Green * 255.0);
+                        Blue = Math.Min(255, Blue * 255.0);
 
                         Colors[point.X, point.Y] = Color.FromArgb((byte)Red, (byte)Green, (byte)Blue);
                     });
                 });
-                
-                if(!NoDrawingCheckBox.Checked) for(int i = 0; i < Canvas.Width; ++i)
+
+                for(int i = 0; i < Canvas.Width; ++i)
                 {
                     for(int j = 0; j < Canvas.Height; ++j)
                     {
                         DrawArea.SetPixel(i, j, Colors[i, j]);
                     }
                 }
-                else for(int i = 0; i < Canvas.Width; ++i)
-                {
-                    for(int j = 0; j < Canvas.Height; ++j)
-                    {
-                        DrawArea.SetPixel(i, j, Color.White);
-                    }
-                }
-                
 
                 if(MeshVisibleCheckBox.Checked) foreach(var triangle in Logic.Triangles)
                 {
@@ -446,8 +473,19 @@ namespace TriangularMesh
             ImportNormalMap("Image/foxmap.png");
         }
 
-        private void NoDrawingCheckBox_CheckedChanged(object sender, EventArgs e)
+        private void SpotlightsOnButton_Click(object sender, EventArgs e)
         {
+            Redrawing();
+        }
+
+        private void MainLightOutCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            Redrawing();
+        }
+
+        private void SpotlightCosineBar_ValueChanged(object sender, EventArgs e)
+        {
+            Logic.SpotlightCosinePower = SpotlightCosineBar.Value;
             Redrawing();
         }
     }

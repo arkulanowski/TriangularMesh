@@ -51,7 +51,13 @@
             this.y_IntervalCountBar = new System.Windows.Forms.TrackBar();
             this.x_IntervalCountBar = new System.Windows.Forms.TrackBar();
             this.LabToolBox = new System.Windows.Forms.GroupBox();
-            this.NoDrawingCheckBox = new System.Windows.Forms.CheckBox();
+            this.SpotlightCosineBar = new System.Windows.Forms.TrackBar();
+            this.MainLightOutCheckBox = new System.Windows.Forms.CheckBox();
+            this.SpotlightsOnButton = new System.Windows.Forms.CheckBox();
+            this.TranslationGroupBox = new System.Windows.Forms.GroupBox();
+            this.AlphaBar = new System.Windows.Forms.TrackBar();
+            this.BetaBar = new System.Windows.Forms.TrackBar();
+            this.TranslateCheckBox = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.Canvas)).BeginInit();
             this.ToolsBox.SuspendLayout();
             this.FlashlightBox.SuspendLayout();
@@ -66,6 +72,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.y_IntervalCountBar)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.x_IntervalCountBar)).BeginInit();
             this.LabToolBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.SpotlightCosineBar)).BeginInit();
+            this.TranslationGroupBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.AlphaBar)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.BetaBar)).BeginInit();
             this.SuspendLayout();
             // 
             // Canvas
@@ -322,7 +332,10 @@
             // 
             // LabToolBox
             // 
-            this.LabToolBox.Controls.Add(this.NoDrawingCheckBox);
+            this.LabToolBox.Controls.Add(this.TranslationGroupBox);
+            this.LabToolBox.Controls.Add(this.SpotlightCosineBar);
+            this.LabToolBox.Controls.Add(this.MainLightOutCheckBox);
+            this.LabToolBox.Controls.Add(this.SpotlightsOnButton);
             this.LabToolBox.Location = new System.Drawing.Point(883, 12);
             this.LabToolBox.Name = "LabToolBox";
             this.LabToolBox.Size = new System.Drawing.Size(161, 657);
@@ -330,16 +343,75 @@
             this.LabToolBox.TabStop = false;
             this.LabToolBox.Text = "Labs";
             // 
-            // NoDrawingCheckBox
+            // SpotlightCosineBar
             // 
-            this.NoDrawingCheckBox.AutoSize = true;
-            this.NoDrawingCheckBox.Location = new System.Drawing.Point(18, 22);
-            this.NoDrawingCheckBox.Name = "NoDrawingCheckBox";
-            this.NoDrawingCheckBox.Size = new System.Drawing.Size(88, 19);
-            this.NoDrawingCheckBox.TabIndex = 0;
-            this.NoDrawingCheckBox.Text = "No drawing";
-            this.NoDrawingCheckBox.UseVisualStyleBackColor = true;
-            this.NoDrawingCheckBox.CheckedChanged += new System.EventHandler(this.NoDrawingCheckBox_CheckedChanged);
+            this.SpotlightCosineBar.Location = new System.Drawing.Point(14, 73);
+            this.SpotlightCosineBar.Maximum = 100;
+            this.SpotlightCosineBar.Minimum = 1;
+            this.SpotlightCosineBar.Name = "SpotlightCosineBar";
+            this.SpotlightCosineBar.Size = new System.Drawing.Size(131, 45);
+            this.SpotlightCosineBar.TabIndex = 2;
+            this.SpotlightCosineBar.TickFrequency = 0;
+            this.SpotlightCosineBar.Value = 100;
+            this.SpotlightCosineBar.ValueChanged += new System.EventHandler(this.SpotlightCosineBar_ValueChanged);
+            // 
+            // MainLightOutCheckBox
+            // 
+            this.MainLightOutCheckBox.AutoSize = true;
+            this.MainLightOutCheckBox.Location = new System.Drawing.Point(17, 48);
+            this.MainLightOutCheckBox.Name = "MainLightOutCheckBox";
+            this.MainLightOutCheckBox.Size = new System.Drawing.Size(101, 19);
+            this.MainLightOutCheckBox.TabIndex = 1;
+            this.MainLightOutCheckBox.Text = "Main light out";
+            this.MainLightOutCheckBox.UseVisualStyleBackColor = true;
+            this.MainLightOutCheckBox.CheckedChanged += new System.EventHandler(this.MainLightOutCheckBox_CheckedChanged);
+            // 
+            // SpotlightsOnButton
+            // 
+            this.SpotlightsOnButton.AutoSize = true;
+            this.SpotlightsOnButton.Location = new System.Drawing.Point(17, 22);
+            this.SpotlightsOnButton.Name = "SpotlightsOnButton";
+            this.SpotlightsOnButton.Size = new System.Drawing.Size(96, 19);
+            this.SpotlightsOnButton.TabIndex = 0;
+            this.SpotlightsOnButton.Text = "Spotlights on";
+            this.SpotlightsOnButton.UseVisualStyleBackColor = true;
+            this.SpotlightsOnButton.Click += new System.EventHandler(this.SpotlightsOnButton_Click);
+            // 
+            // TranslationGroupBox
+            // 
+            this.TranslationGroupBox.Controls.Add(this.TranslateCheckBox);
+            this.TranslationGroupBox.Controls.Add(this.BetaBar);
+            this.TranslationGroupBox.Controls.Add(this.AlphaBar);
+            this.TranslationGroupBox.Location = new System.Drawing.Point(6, 106);
+            this.TranslationGroupBox.Name = "TranslationGroupBox";
+            this.TranslationGroupBox.Size = new System.Drawing.Size(149, 224);
+            this.TranslationGroupBox.TabIndex = 3;
+            this.TranslationGroupBox.TabStop = false;
+            this.TranslationGroupBox.Text = "Translation";
+            // 
+            // AlphaBar
+            // 
+            this.AlphaBar.Location = new System.Drawing.Point(6, 22);
+            this.AlphaBar.Name = "AlphaBar";
+            this.AlphaBar.Size = new System.Drawing.Size(133, 45);
+            this.AlphaBar.TabIndex = 0;
+            // 
+            // BetaBar
+            // 
+            this.BetaBar.Location = new System.Drawing.Point(6, 68);
+            this.BetaBar.Name = "BetaBar";
+            this.BetaBar.Size = new System.Drawing.Size(133, 45);
+            this.BetaBar.TabIndex = 1;
+            // 
+            // TranslateCheckBox
+            // 
+            this.TranslateCheckBox.AutoSize = true;
+            this.TranslateCheckBox.Location = new System.Drawing.Point(11, 119);
+            this.TranslateCheckBox.Name = "TranslateCheckBox";
+            this.TranslateCheckBox.Size = new System.Drawing.Size(72, 19);
+            this.TranslateCheckBox.TabIndex = 2;
+            this.TranslateCheckBox.Text = "Translate";
+            this.TranslateCheckBox.UseVisualStyleBackColor = true;
             // 
             // TriangularMesh
             // 
@@ -371,6 +443,11 @@
             ((System.ComponentModel.ISupportInitialize)(this.x_IntervalCountBar)).EndInit();
             this.LabToolBox.ResumeLayout(false);
             this.LabToolBox.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.SpotlightCosineBar)).EndInit();
+            this.TranslationGroupBox.ResumeLayout(false);
+            this.TranslationGroupBox.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.AlphaBar)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.BetaBar)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -400,6 +477,12 @@
         private Button ClearNormalMapButton;
         private Button ImportFoxMapButton;
         private GroupBox LabToolBox;
-        private CheckBox NoDrawingCheckBox;
+        private CheckBox SpotlightsOnButton;
+        private CheckBox MainLightOutCheckBox;
+        private TrackBar SpotlightCosineBar;
+        private GroupBox TranslationGroupBox;
+        private CheckBox TranslateCheckBox;
+        private TrackBar BetaBar;
+        private TrackBar AlphaBar;
     }
 }

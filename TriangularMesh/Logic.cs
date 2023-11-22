@@ -25,6 +25,7 @@ namespace TriangularMesh
         internal static Vector3D[,] ImportedNormalMapRGBNormalized;
         internal static bool UsingNormalMap = false;
         internal static (int, int) ChosenControlPoint;
+        internal static int SpotlightCosinePower = 100;
         public static void Recalculate()
         {
             Vertices = new TriangleVertex[m + 1, n + 1];
