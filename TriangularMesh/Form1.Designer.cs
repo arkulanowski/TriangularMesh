@@ -51,13 +51,13 @@
             this.y_IntervalCountBar = new System.Windows.Forms.TrackBar();
             this.x_IntervalCountBar = new System.Windows.Forms.TrackBar();
             this.LabToolBox = new System.Windows.Forms.GroupBox();
+            this.TranslationGroupBox = new System.Windows.Forms.GroupBox();
+            this.TranslateCheckBox = new System.Windows.Forms.CheckBox();
+            this.BetaBar = new System.Windows.Forms.TrackBar();
+            this.AlphaBar = new System.Windows.Forms.TrackBar();
             this.SpotlightCosineBar = new System.Windows.Forms.TrackBar();
             this.MainLightOutCheckBox = new System.Windows.Forms.CheckBox();
             this.SpotlightsOnButton = new System.Windows.Forms.CheckBox();
-            this.TranslationGroupBox = new System.Windows.Forms.GroupBox();
-            this.AlphaBar = new System.Windows.Forms.TrackBar();
-            this.BetaBar = new System.Windows.Forms.TrackBar();
-            this.TranslateCheckBox = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.Canvas)).BeginInit();
             this.ToolsBox.SuspendLayout();
             this.FlashlightBox.SuspendLayout();
@@ -72,10 +72,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.y_IntervalCountBar)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.x_IntervalCountBar)).BeginInit();
             this.LabToolBox.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.SpotlightCosineBar)).BeginInit();
             this.TranslationGroupBox.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.AlphaBar)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.BetaBar)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.AlphaBar)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.SpotlightCosineBar)).BeginInit();
             this.SuspendLayout();
             // 
             // Canvas
@@ -343,6 +343,45 @@
             this.LabToolBox.TabStop = false;
             this.LabToolBox.Text = "Labs";
             // 
+            // TranslationGroupBox
+            // 
+            this.TranslationGroupBox.Controls.Add(this.TranslateCheckBox);
+            this.TranslationGroupBox.Controls.Add(this.BetaBar);
+            this.TranslationGroupBox.Controls.Add(this.AlphaBar);
+            this.TranslationGroupBox.Location = new System.Drawing.Point(6, 106);
+            this.TranslationGroupBox.Name = "TranslationGroupBox";
+            this.TranslationGroupBox.Size = new System.Drawing.Size(149, 149);
+            this.TranslationGroupBox.TabIndex = 3;
+            this.TranslationGroupBox.TabStop = false;
+            this.TranslationGroupBox.Text = "Translation";
+            // 
+            // TranslateCheckBox
+            // 
+            this.TranslateCheckBox.AutoSize = true;
+            this.TranslateCheckBox.Location = new System.Drawing.Point(11, 119);
+            this.TranslateCheckBox.Name = "TranslateCheckBox";
+            this.TranslateCheckBox.Size = new System.Drawing.Size(72, 19);
+            this.TranslateCheckBox.TabIndex = 2;
+            this.TranslateCheckBox.Text = "Translate";
+            this.TranslateCheckBox.UseVisualStyleBackColor = true;
+            this.TranslateCheckBox.CheckedChanged += new System.EventHandler(this.TranslateCheckBox_CheckedChanged);
+            // 
+            // BetaBar
+            // 
+            this.BetaBar.Location = new System.Drawing.Point(6, 68);
+            this.BetaBar.Name = "BetaBar";
+            this.BetaBar.Size = new System.Drawing.Size(133, 45);
+            this.BetaBar.TabIndex = 1;
+            this.BetaBar.ValueChanged += new System.EventHandler(this.BetaBar_ValueChanged);
+            // 
+            // AlphaBar
+            // 
+            this.AlphaBar.Location = new System.Drawing.Point(6, 22);
+            this.AlphaBar.Name = "AlphaBar";
+            this.AlphaBar.Size = new System.Drawing.Size(133, 45);
+            this.AlphaBar.TabIndex = 0;
+            this.AlphaBar.ValueChanged += new System.EventHandler(this.AlphaBar_ValueChanged);
+            // 
             // SpotlightCosineBar
             // 
             this.SpotlightCosineBar.Location = new System.Drawing.Point(14, 73);
@@ -377,42 +416,6 @@
             this.SpotlightsOnButton.UseVisualStyleBackColor = true;
             this.SpotlightsOnButton.Click += new System.EventHandler(this.SpotlightsOnButton_Click);
             // 
-            // TranslationGroupBox
-            // 
-            this.TranslationGroupBox.Controls.Add(this.TranslateCheckBox);
-            this.TranslationGroupBox.Controls.Add(this.BetaBar);
-            this.TranslationGroupBox.Controls.Add(this.AlphaBar);
-            this.TranslationGroupBox.Location = new System.Drawing.Point(6, 106);
-            this.TranslationGroupBox.Name = "TranslationGroupBox";
-            this.TranslationGroupBox.Size = new System.Drawing.Size(149, 224);
-            this.TranslationGroupBox.TabIndex = 3;
-            this.TranslationGroupBox.TabStop = false;
-            this.TranslationGroupBox.Text = "Translation";
-            // 
-            // AlphaBar
-            // 
-            this.AlphaBar.Location = new System.Drawing.Point(6, 22);
-            this.AlphaBar.Name = "AlphaBar";
-            this.AlphaBar.Size = new System.Drawing.Size(133, 45);
-            this.AlphaBar.TabIndex = 0;
-            // 
-            // BetaBar
-            // 
-            this.BetaBar.Location = new System.Drawing.Point(6, 68);
-            this.BetaBar.Name = "BetaBar";
-            this.BetaBar.Size = new System.Drawing.Size(133, 45);
-            this.BetaBar.TabIndex = 1;
-            // 
-            // TranslateCheckBox
-            // 
-            this.TranslateCheckBox.AutoSize = true;
-            this.TranslateCheckBox.Location = new System.Drawing.Point(11, 119);
-            this.TranslateCheckBox.Name = "TranslateCheckBox";
-            this.TranslateCheckBox.Size = new System.Drawing.Size(72, 19);
-            this.TranslateCheckBox.TabIndex = 2;
-            this.TranslateCheckBox.Text = "Translate";
-            this.TranslateCheckBox.UseVisualStyleBackColor = true;
-            // 
             // TriangularMesh
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -443,11 +446,11 @@
             ((System.ComponentModel.ISupportInitialize)(this.x_IntervalCountBar)).EndInit();
             this.LabToolBox.ResumeLayout(false);
             this.LabToolBox.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.SpotlightCosineBar)).EndInit();
             this.TranslationGroupBox.ResumeLayout(false);
             this.TranslationGroupBox.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.AlphaBar)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.BetaBar)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.AlphaBar)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.SpotlightCosineBar)).EndInit();
             this.ResumeLayout(false);
 
         }

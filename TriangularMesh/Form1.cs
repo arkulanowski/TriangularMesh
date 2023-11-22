@@ -3,6 +3,7 @@ using System.Windows.Forms;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Media3D;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
+using System.Numerics;
 
 namespace TriangularMesh
 {
@@ -104,6 +105,8 @@ namespace TriangularMesh
                 return result;
             }
 
+            //(double, double, double)[,] xyz = new (double, double, double)[Canvas.Width, Canvas.Height];
+
             using (Graphics g = Graphics.FromImage(DrawArea.Bitmap))
             {
                 Color[,] Colors = new Color[Canvas.Width, Canvas.Height];
@@ -116,6 +119,7 @@ namespace TriangularMesh
                         double y = canvy2y(point.Y);
                         (double l1, double l2, double l3) = barycentric(x, y, triangle);
                         double z = l1 * triangle.A.z + l2 * triangle.B.z + l3 * triangle.C.z;
+                        //xyz[point.X, point.Y] = (x, y, z);
                         Vector3D N = l1 * triangle.A.Normal + l2 * triangle.B.Normal + l3 * triangle.C.Normal;
                         N.Normalize();
                         if (Logic.UsingNormalMap)
@@ -185,6 +189,27 @@ namespace TriangularMesh
                         Colors[point.X, point.Y] = Color.FromArgb((byte)Red, (byte)Green, (byte)Blue);
                     });
                 });
+
+                //Matrix4x4 M = Matrix4x4.CreateTranslation((float)(-Canvas.Width * 0.5), (float)(-Canvas.Height * 0.5), 0) *
+                //Matrix4x4.CreateFromYawPitchRoll(0, (float)(Math.PI * AlphaBar.Value / 180.0), (float)(Math.PI * BetaBar.Value / 180.0)) *
+                //Matrix4x4.CreateTranslation((float)(Canvas.Width * 0.5), (float)(Canvas.Height * 0.5), 0);
+
+                //for(int i = 0; i < Canvas.Width; ++i)
+                //{
+                //    for(int j = 0; j < Canvas.Height; ++j)
+                //    {
+                //        if(!TranslateCheckBox.Checked) DrawArea.SetPixel(i, j, Colors[i, j]);
+                //        else
+                //        {
+                //            (int x, int y) = (x2canvx(i), y2canvy(j));
+                //            Vector3 p = new Vector3(x, y, (float)xyz[i, j].Item3);
+                //            p = Vector3.Transform(p, M);
+                //            if (p.X < 0) p.X = 0; if (p.X >= Canvas.Width) p.X = Canvas.Width - 1;
+                //            if (p.Y < 0) p.Y = 0; if (p.Y >= Canvas.Height) p.Y = Canvas.Height - 1;
+                //            DrawArea.SetPixel((int)p.X, (int)p.Y, Colors[i, j]);
+                //        }
+                //    }
+                //}
 
                 for(int i = 0; i < Canvas.Width; ++i)
                 {
@@ -487,6 +512,21 @@ namespace TriangularMesh
         {
             Logic.SpotlightCosinePower = SpotlightCosineBar.Value;
             Redrawing();
+        }
+
+        private void TranslateCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            Redrawing();
+        }
+
+        private void AlphaBar_ValueChanged(object sender, EventArgs e)
+        {
+            if (TranslateCheckBox.Checked) Redrawing();
+        }
+
+        private void BetaBar_ValueChanged(object sender, EventArgs e)
+        {
+            if (TranslateCheckBox.Checked) Redrawing();
         }
     }
 }
