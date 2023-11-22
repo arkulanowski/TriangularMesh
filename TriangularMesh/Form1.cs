@@ -107,7 +107,7 @@ namespace TriangularMesh
             using (Graphics g = Graphics.FromImage(DrawArea.Bitmap))
             {
                 Color[,] Colors = new Color[Canvas.Width, Canvas.Height];
-                Parallel.ForEach(Logic.Triangles, (triangle) =>
+                if(!NoDrawingCheckBox.Checked) Parallel.ForEach(Logic.Triangles, (triangle) =>
                 {
                     List<Point> Pixels = CanvasPixelsToFill(triangle);
                     Parallel.ForEach(Pixels, (point) =>
@@ -150,13 +150,22 @@ namespace TriangularMesh
                         Colors[point.X, point.Y] = Color.FromArgb((byte)Red, (byte)Green, (byte)Blue);
                     });
                 });
-                for(int i = 0; i < Canvas.Width; ++i)
+                
+                if(!NoDrawingCheckBox.Checked) for(int i = 0; i < Canvas.Width; ++i)
                 {
                     for(int j = 0; j < Canvas.Height; ++j)
                     {
                         DrawArea.SetPixel(i, j, Colors[i, j]);
                     }
                 }
+                else for(int i = 0; i < Canvas.Width; ++i)
+                {
+                    for(int j = 0; j < Canvas.Height; ++j)
+                    {
+                        DrawArea.SetPixel(i, j, Color.White);
+                    }
+                }
+                
 
                 if(MeshVisibleCheckBox.Checked) foreach(var triangle in Logic.Triangles)
                 {
@@ -435,6 +444,11 @@ namespace TriangularMesh
         private void ImportFoxMapButton_Click(object sender, EventArgs e)
         {
             ImportNormalMap("Image/foxmap.png");
+        }
+
+        private void NoDrawingCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            Redrawing();
         }
     }
 }

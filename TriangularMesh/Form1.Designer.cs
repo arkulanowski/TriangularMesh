@@ -50,6 +50,8 @@
             this.MeshVisibleCheckBox = new System.Windows.Forms.CheckBox();
             this.y_IntervalCountBar = new System.Windows.Forms.TrackBar();
             this.x_IntervalCountBar = new System.Windows.Forms.TrackBar();
+            this.LabToolBox = new System.Windows.Forms.GroupBox();
+            this.NoDrawingCheckBox = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.Canvas)).BeginInit();
             this.ToolsBox.SuspendLayout();
             this.FlashlightBox.SuspendLayout();
@@ -63,6 +65,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.z_ControlPointBar)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.y_IntervalCountBar)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.x_IntervalCountBar)).BeginInit();
+            this.LabToolBox.SuspendLayout();
             this.SuspendLayout();
             // 
             // Canvas
@@ -317,14 +320,36 @@
             this.x_IntervalCountBar.Value = 30;
             this.x_IntervalCountBar.ValueChanged += new System.EventHandler(this.x_IntervalCountBar_ValueChanged);
             // 
+            // LabToolBox
+            // 
+            this.LabToolBox.Controls.Add(this.NoDrawingCheckBox);
+            this.LabToolBox.Location = new System.Drawing.Point(883, 12);
+            this.LabToolBox.Name = "LabToolBox";
+            this.LabToolBox.Size = new System.Drawing.Size(161, 657);
+            this.LabToolBox.TabIndex = 2;
+            this.LabToolBox.TabStop = false;
+            this.LabToolBox.Text = "Labs";
+            // 
+            // NoDrawingCheckBox
+            // 
+            this.NoDrawingCheckBox.AutoSize = true;
+            this.NoDrawingCheckBox.Location = new System.Drawing.Point(18, 22);
+            this.NoDrawingCheckBox.Name = "NoDrawingCheckBox";
+            this.NoDrawingCheckBox.Size = new System.Drawing.Size(88, 19);
+            this.NoDrawingCheckBox.TabIndex = 0;
+            this.NoDrawingCheckBox.Text = "No drawing";
+            this.NoDrawingCheckBox.UseVisualStyleBackColor = true;
+            this.NoDrawingCheckBox.CheckedChanged += new System.EventHandler(this.NoDrawingCheckBox_CheckedChanged);
+            // 
             // TriangularMesh
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(884, 681);
+            this.ClientSize = new System.Drawing.Size(1056, 681);
+            this.Controls.Add(this.LabToolBox);
             this.Controls.Add(this.ToolsBox);
             this.Controls.Add(this.Canvas);
-            this.MaximumSize = new System.Drawing.Size(900, 720);
+            this.MaximumSize = new System.Drawing.Size(1072, 720);
             this.MinimumSize = new System.Drawing.Size(900, 720);
             this.Name = "TriangularMesh";
             this.Text = "TriangularMesh";
@@ -344,6 +369,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.z_ControlPointBar)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.y_IntervalCountBar)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.x_IntervalCountBar)).EndInit();
+            this.LabToolBox.ResumeLayout(false);
+            this.LabToolBox.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -372,5 +399,7 @@
         private Button NormalMapButton;
         private Button ClearNormalMapButton;
         private Button ImportFoxMapButton;
+        private GroupBox LabToolBox;
+        private CheckBox NoDrawingCheckBox;
     }
 }
